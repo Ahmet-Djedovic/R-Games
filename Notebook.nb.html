@@ -216,21 +216,28 @@ pre code {
 
 <!-- rnb-text-begin -->
 <h1>
-inital commit
+R Notebook - Verdieping beroepsproduct ICT Business
 </h1>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShcInRpZHl2ZXJzZVwiKSAjIERlIGxpYnJhcnkgdGlkeXZlcnNlIGdlYnJ1aWsgaWsgdm9vciBmaWx0ZXJzIGV0Yy5cbmxpYnJhcnkoXCJjc3ZyZWFkXCIpICMgbGlicmFyeSBvbSBFeGNlbCBiZXN0YW5kZW4gaW4gdGUga3VubmVuIGxlemVuLlxubGlicmFyeShcImx1YnJpZGF0ZVwiKSMgbGlicmFyeSBvbSBlZW4gbnVtZXJpZWtlIHdhYXJkZSB0ZXJ1ZyB0ZSBrcmlqZ2VuIGJpaiBkYXR1bXMuXG5gYGAifQ== -->
+<pre class="r"><code>library(&quot;tidyverse&quot;) # De library tidyverse gebruik ik voor filters etc.
+library(&quot;csvread&quot;) # library om Excel bestanden in te kunnen lezen.
+library(&quot;lubridate&quot;)# library om een numerieke waarde terug te krijgen bij datums.</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2FtZXNkZiA8LSByZWFkLmNzdihcInNvdXJjZXMvdmdzYWxlcy5jc3ZcIikgIyBkYXRhc2V0IGlubGV6ZW4gZW4gaW4gZGF0YWZyYW1lIGdhbWVzZGYgcGxhYXRzZW5cblxuYGBgIn0= -->
+<pre class="r"><code>gamesdf &lt;- read.csv(&quot;sources/vgsales.csv&quot;) # dataset inlezen en in dataframe gamesdf plaatsen
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgVmlkZW9HYW1lcyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCjxoMT4gaW5pdGFsIGNvbW1pdCA8L2gxPg0KDQpgYGB7cn0NCnBsb3QoY2FycykNCmBgYA0KDQpBZGQgYSBuZXcgY2h1bmsgYnkgY2xpY2tpbmcgdGhlICpJbnNlcnQgQ2h1bmsqIGJ1dHRvbiBvbiB0aGUgdG9vbGJhciBvciBieSBwcmVzc2luZyAqQ3RybCtBbHQrSSouDQoNCldoZW4geW91IHNhdmUgdGhlIG5vdGVib29rLCBhbiBIVE1MIGZpbGUgY29udGFpbmluZyB0aGUgY29kZSBhbmQgb3V0cHV0IHdpbGwgYmUgc2F2ZWQgYWxvbmdzaWRlIGl0IChjbGljayB0aGUgKlByZXZpZXcqIGJ1dHRvbiBvciBwcmVzcyAqQ3RybCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLg0KDQpUaGUgcHJldmlldyBzaG93cyB5b3UgYSByZW5kZXJlZCBIVE1MIGNvcHkgb2YgdGhlIGNvbnRlbnRzIG9mIHRoZSBlZGl0b3IuIENvbnNlcXVlbnRseSwgdW5saWtlICpLbml0KiwgKlByZXZpZXcqIGRvZXMgbm90IHJ1biBhbnkgUiBjb2RlIGNodW5rcy4gSW5zdGVhZCwgdGhlIG91dHB1dCBvZiB0aGUgY2h1bmsgd2hlbiBpdCB3YXMgbGFzdCBydW4gaW4gdGhlIGVkaXRvciBpcyBkaXNwbGF5ZWQuDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgVmlkZW9HYW1lcyINCm91dHB1dDogaHRtbF9ub3RlYm9vaw0KLS0tDQoNCjxoMT4gUiBOb3RlYm9vayAtIFZlcmRpZXBpbmcgYmVyb2Vwc3Byb2R1Y3QgSUNUIEJ1c2luZXNzIDwvaDE+DQoNCmBgYHtyIH0NCmxpYnJhcnkoInRpZHl2ZXJzZSIpICMgRGUgbGlicmFyeSB0aWR5dmVyc2UgZ2VicnVpayBpayB2b29yIGZpbHRlcnMgZXRjLg0KbGlicmFyeSgiY3N2cmVhZCIpICMgbGlicmFyeSBvbSBFeGNlbCBiZXN0YW5kZW4gaW4gdGUga3VubmVuIGxlemVuLg0KbGlicmFyeSgibHVicmlkYXRlIikjIGxpYnJhcnkgb20gZWVuIG51bWVyaWVrZSB3YWFyZGUgdGVydWcgdGUga3JpamdlbiBiaWogZGF0dW1zLg0KYGBgDQoNCg0KYGBge3J9DQpnYW1lc2RmIDwtIHJlYWQuY3N2KCJzb3VyY2VzL3Znc2FsZXMuY3N2IikgIyBkYXRhc2V0IGlubGV6ZW4gZW4gaW4gZGF0YWZyYW1lIGdhbWVzZGYgcGxhYXRzZW4NCg0KYGBgDQoNCg0KDQo=</div>
 
 
 
