@@ -1,21 +1,48 @@
 ---
 title: "R VideoGames"
-output: html_notebook
+output:
+  word_document: default
+  html_notebook: default
+  pdf_document: default
 ---
 
 <h1> R Notebook - Verdieping beroepsproduct ICT Business </h1>
-
 ```{r }
 library("tidyverse") # De library tidyverse gebruik ik voor filters etc.
 library("csvread") # library om Excel bestanden in te kunnen lezen.
 library("lubridate")# library om een numerieke waarde terug te krijgen bij datums.
+library("dplyr")# library voor onder andere SQL
+library("RMySQL")# library voor sql connectie
+
 ```
 
 
+<h1> Dataset inladen via sql </h1>
 ```{r}
-gamesdf <- read.csv("sources/vgsales.csv") # dataset inlezen en in dataframe gamesdf plaatsen
+con = dbConnect(MySQL(), 
+                user='root',
+                password='',
+                dbname='games',
+                host='127.0.0.1')
 
 ```
 
 
+<h1> SQL query voor ophalen van game data per genre </h1>
+```{sql, connection = con, output.var = "gamesdf_genre"}
+SELECT `Rank`, `Genre`, SUM(`Global_Sales`) AS `TotalSalesInMillions`, `Year` 
+FROM `games_data` 
+WHERE `Year` = "2009"
+GROUP BY `Genre`;
+
+```
+
+<h1>  </h1>
+```{r}
+ggplot(data=gamesdf_genre,
+  aes(x=Genre, y=TotalSalesInMillions, fill = Genre)) +
+  geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+       labs(y = "Game Verkoop (in miljoenen)", x = "Genres") 
+```
 
