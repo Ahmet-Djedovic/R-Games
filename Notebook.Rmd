@@ -1,9 +1,11 @@
 ---
 title: "R VideoGames"
 output:
-  word_document: default
+  html_document:
+    df_print: paged
   html_notebook: default
   pdf_document: default
+  word_document: default
 ---
 
 <h1> R Notebook - Verdieping beroepsproduct ICT Business </h1>
@@ -31,13 +33,13 @@ con = dbConnect(MySQL(),
 <h1> SQL query voor ophalen van game data per genre </h1>
 ```{sql, connection = con, output.var = "gamesdf_genre"}
 SELECT `Rank`, `Genre`, SUM(`Global_Sales`) AS `TotalSalesInMillions`, `Year` 
-FROM `games_data` 
-WHERE `Year` = "2009"
-GROUP BY `Genre`;
+  FROM `games_data` 
+    WHERE `Year` = "2009"
+      GROUP BY `Genre`;
 
 ```
 
-<h1>  </h1>
+<h1>Populairste game-genre in 2009</h1>
 ```{r}
 ggplot(data=gamesdf_genre,
   aes(x=Genre, y=TotalSalesInMillions, fill = Genre)) +
@@ -46,3 +48,32 @@ ggplot(data=gamesdf_genre,
        labs(y = "Game Verkoop (in miljoenen)", x = "Genres") 
 ```
 
+
+<h1> SQL query voor ophalen van aantal Shooter game van publisher Nintendo op de NES of sness</h1>
+```{sql, connection = con, output.var = "gamesdf_nintendo_nes"}
+SELECT *
+  FROM games_data
+    WHERE (Genre = 'Shooter' AND Publisher = 'Nintendo') 
+      AND (Platform = 'SNES' OR Platform = 'NES');
+```
+
+
+<h1> Shooter game van publisher Nintendo op de NES of sness</h1>
+```{r}
+ggplot(data=gamesdf_nintendo_nes,
+  aes(x=Name, y=Global_Sales, fill =Platform)) +
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+       labs(y = "Game verkoop (in miljoenen)", x = "Game titel")
+```
+
+
+<h1>Grootste publishers in de laatste 5 jaar</h1>
+
+
+<h1>Hoeveel kopien van Pokemon zijn verkocht tussen 2000-2005</h1>
+```{sql, connection = con, output.var = "gamesdf_nintendo_pokemon"}
+SELECT * FROM `games_data` 
+  WHERE Name LIKE '%Pokemon%' 
+    AND `Year` BETWEEN 2000 AND 2005
+```
