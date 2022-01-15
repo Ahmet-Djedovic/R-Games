@@ -180,11 +180,13 @@ SQL query voor ophalen van game data per genre
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{SELECT}\NormalTok{ \textasciigrave{}Rank\textasciigrave{}, \textasciigrave{}Genre\textasciigrave{}, }\FunctionTok{SUM}\NormalTok{(\textasciigrave{}Global\_Sales\textasciigrave{}) }\KeywordTok{AS}\NormalTok{ \textasciigrave{}TotalSalesInMillions\textasciigrave{}, \textasciigrave{}Year\textasciigrave{} }
-\KeywordTok{FROM}\NormalTok{ \textasciigrave{}games\_data\textasciigrave{} }
-\KeywordTok{WHERE}\NormalTok{ \textasciigrave{}Year\textasciigrave{} }\OperatorTok{=} \OtherTok{"2009"}
-\KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ \textasciigrave{}Genre\textasciigrave{};}
+  \KeywordTok{FROM}\NormalTok{ \textasciigrave{}games\_data\textasciigrave{} }
+    \KeywordTok{WHERE}\NormalTok{ \textasciigrave{}Year\textasciigrave{} }\OperatorTok{=} \OtherTok{"2009"}
+      \KeywordTok{GROUP} \KeywordTok{BY}\NormalTok{ \textasciigrave{}Genre\textasciigrave{};}
 \end{Highlighting}
 \end{Shaded}
+
+Populairste game-genre in 2009 over de hele wereld
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -197,5 +199,58 @@ SQL query voor ophalen van game data per genre
 \end{Shaded}
 
 \includegraphics{Notebook_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+SQL query voor ophalen van aantal Shooter game van publisher Nintendo op
+de NES of sness
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*}
+  \KeywordTok{FROM}\NormalTok{ games\_data}
+    \KeywordTok{WHERE}\NormalTok{ (Genre }\OperatorTok{=} \StringTok{\textquotesingle{}Shooter\textquotesingle{}} \KeywordTok{AND}\NormalTok{ Publisher }\OperatorTok{=} \StringTok{\textquotesingle{}Nintendo\textquotesingle{}}\NormalTok{) }
+      \KeywordTok{AND}\NormalTok{ (Platform }\OperatorTok{=} \StringTok{\textquotesingle{}SNES\textquotesingle{}} \KeywordTok{OR}\NormalTok{ Platform }\OperatorTok{=} \StringTok{\textquotesingle{}NES\textquotesingle{}}\NormalTok{);}
+\end{Highlighting}
+\end{Shaded}
+
+Shooter game van publisher Nintendo op de NES of sness
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{gamesdf\_nintendo\_nes,}
+  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Name, }\AttributeTok{y=}\NormalTok{Global\_Sales, }\AttributeTok{fill =}\NormalTok{Platform)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat=}\StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{vjust =} \DecValTok{1}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{+}
+       \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"Game verkoop (in miljoenen)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Game titel"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Notebook_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+Grootste publishers in de laatste 5 jaar
+
+Top 5 Pokemon games tussen 2000-2005 op basis van verkoop
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{SELECT} \OperatorTok{*} \KeywordTok{FROM}\NormalTok{ \textasciigrave{}games\_data\textasciigrave{} }
+  \KeywordTok{WHERE}\NormalTok{ Name }\KeywordTok{LIKE} \StringTok{\textquotesingle{}\%Pokemon\%\textquotesingle{}} 
+    \KeywordTok{AND}\NormalTok{ \textasciigrave{}Year\textasciigrave{} }\KeywordTok{BETWEEN} \DecValTok{2000} \KeywordTok{AND} \DecValTok{2005}
+      \KeywordTok{ORDER} \KeywordTok{BY}\NormalTok{ Global\_Sales }\KeywordTok{DESC}\NormalTok{, Global\_Sales }\KeywordTok{DESC}
+        \KeywordTok{LIMIT} \DecValTok{5}\NormalTok{; }
+      
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data=}\NormalTok{gamesdf\_nintendo\_pokemon,}
+  \FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Name, }\AttributeTok{y=}\NormalTok{Global\_Sales, }\AttributeTok{fill =}\NormalTok{Platform)) }\SpecialCharTok{+}
+    \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat=}\StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+    \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{45}\NormalTok{, }\AttributeTok{vjust =} \DecValTok{1}\NormalTok{, }\AttributeTok{hjust =} \DecValTok{1}\NormalTok{)) }\SpecialCharTok{+}
+       \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"Game verkoop (in miljoenen)"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Game titel"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Notebook_files/figure-latex/unnamed-chunk-8-1.pdf}
 
 \end{document}

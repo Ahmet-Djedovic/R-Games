@@ -1,10 +1,10 @@
 ---
 title: "R VideoGames"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
   html_notebook: default
-  pdf_document: default
   word_document: default
 ---
 
@@ -39,7 +39,7 @@ SELECT `Rank`, `Genre`, SUM(`Global_Sales`) AS `TotalSalesInMillions`, `Year`
 
 ```
 
-<h1>Populairste game-genre in 2009</h1>
+<h1>Populairste game-genre in 2009 over de hele wereld</h1>
 ```{r}
 ggplot(data=gamesdf_genre,
   aes(x=Genre, y=TotalSalesInMillions, fill = Genre)) +
@@ -47,33 +47,112 @@ ggplot(data=gamesdf_genre,
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
        labs(y = "Game Verkoop (in miljoenen)", x = "Genres") 
 ```
+<h1> SQL query voor ophalen van game data per genre </h1>
+```{sql, connection = con, output.var = "games"}
+SELECT * 
+  FROM `games_data` 
 
+```
 
-<h1> SQL query voor ophalen van aantal Shooter game van publisher Nintendo op de NES of sness</h1>
+<h1> Hoeveel games zijn er uitgekomen sinds 2009 per genre</h1>
+```{r}
+games %>%
+  mutate(DATE = as.Date(Year, format = "%Y")) %>%
+  select(Year, Genre) %>%
+    filter(Year >= 2009) %>%
+      ggplot(aes(Genre, fill=Genre)) +
+      geom_bar(stat = "count", fill="#f8766d") +
+      stat_count(geom = "text",colour = "Black", aes(label = ..count..),position=position_stack(vjust=0.5)) +
+      theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+      labs(title = "Action games sinds 2000",
+               y = "Aantal releases",
+               x = "Game genres") 
+```
+
+<h1> SQL query voor ophalen van aantal Action games op de X360 of XOne</h1>
 ```{sql, connection = con, output.var = "gamesdf_nintendo_nes"}
 SELECT *
   FROM games_data
-    WHERE (Genre = 'Shooter' AND Publisher = 'Nintendo') 
-      AND (Platform = 'SNES' OR Platform = 'NES');
+    WHERE (Genre = 'Action' ) 
+      AND (Platform = 'X360' OR Platform = 'XOne')
+         LIMIT 25;
 ```
 
 
-<h1> Shooter game van publisher Nintendo op de NES of sness</h1>
+<h1> Grootste Action games op de X360 of XOne</h1>
 ```{r}
 ggplot(data=gamesdf_nintendo_nes,
   aes(x=Name, y=Global_Sales, fill =Platform)) +
     geom_bar(stat="identity") +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1)) +
        labs(y = "Game verkoop (in miljoenen)", x = "Game titel")
 ```
 
 
-<h1>Grootste publishers in de laatste 5 jaar</h1>
+<h1>Grootste publishers in de laatste 5 jaar (huidig jaar 2017)</h1>
 
 
-<h1>Hoeveel kopien van Pokemon zijn verkocht tussen 2000-2005</h1>
+<h1>Top 5 Pokemon games tussen 1996-2015 op basis van verkoop</h1>
 ```{sql, connection = con, output.var = "gamesdf_nintendo_pokemon"}
 SELECT * FROM `games_data` 
-  WHERE Name LIKE '%Pokemon%' 
-    AND `Year` BETWEEN 2000 AND 2005
+  WHERE Name LIKE '%Pokemon%' OR   Name LIKE '%Pokémon%'
+    AND `Year` BETWEEN 1996 AND 2015
+      ORDER BY Global_Sales DESC, Global_Sales DESC
+        LIMIT 5; 
+      
+```
+
+<b> Hier zie je dat Pokemon Blue en Red groot geweest op de GB platform wellicht is het intressant om dit spel opnieuw uitebrengen in een nieuw platform </b>
+```{r}
+ggplot(data=gamesdf_nintendo_pokemon,
+  aes(x=Name, y=Global_Sales, fill =Platform)) +
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+       labs(y = "Game verkoop (in miljoenen)", x = "Game titel") 
+```
+
+<h1>Wie is de grootste Publisher op basis van sales</h1>
+```{sql, connection = con, output.var = "gamesdf_biggest_publisher"}
+SELECT Publisher, SUM(Global_Sales) 
+  AS Global_Sales_In_Millions 
+    FROM games_data 
+      GROUP BY Publisher 
+        ORDER BY Global_Sales DESC
+          LIMIT 1;
+```
+```{sql, connection = con, output.var = "gamesdf_biggest_publisher_founded_data"}
+SELECT games_data.Publisher, SUM(Global_Sales) AS Global_Sales_In_Millions, Founded
+    FROM games_data 
+      INNER JOIN publisher_data
+      ON publisher_data.Publisher  = games_data.Publisher
+      GROUP BY publisher_data.Publisher 
+        ORDER BY Global_Sales DESC
+          LIMIT 1;
+```
+```{r}
+# dit is de grootste publisher print(gamesdf_biggest_publisher)
+
+# hierbij krijgen we ook de founded date van de grootste publisher
+print(gamesdf_biggest_publisher_founded_data)
+```
+```{sql, connection = con, output.var = "publisherdf"}
+SELECT games_data.Publisher, SUM(Global_Sales) AS Global_Sales_In_Millions, Founded, CURDATE() AS DateOfToday
+    FROM games_data 
+      INNER JOIN publisher_data
+      ON publisher_data.Publisher  = games_data.Publisher
+      GROUP BY publisher_data.Publisher 
+```
+
+<h1> Oudste game studios </h1>
+```{r}
+
+publisherdf_interval <- publisherdf %>%
+  #interval is van lubridate
+  mutate(YearInterval = interval(Founded, DateOfToday) / years(1))
+
+ggplot(data=publisherdf_interval,
+  aes(x=Publisher, y=YearInterval, fill = YearInterval)) +
+  geom_bar(stat="identity") +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+       labs(y = "Jaren oud", x = "Game studios") 
 ```
