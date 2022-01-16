@@ -1,15 +1,16 @@
 ---
-title: "R VideoGames"
+title: "R VideoGames Data"
 output:
-  pdf_document: default
+  html_notebook: default
   html_document:
     df_print: paged
-  html_notebook: default
+  pdf_document: default
   word_document: default
 ---
 
-<h1> R Notebook - Verdieping beroepsproduct ICT Business </h1>
-```{r }
+<h4> R Notebook - Verdieping beroepsproduct ICT Business </h4>
+<p> In dit document zal ik 5 SQL chunks uitwerken en 5 plots maken met GGPLOT. Hiervoor zal ik wat packages nodig hebben die we in de eerste chunk zullen inladen</p>
+```{r}
 library("tidyverse") # De library tidyverse gebruik ik voor filters etc.
 library("csvread") # library om Excel bestanden in te kunnen lezen.
 library("lubridate")# library om een numerieke waarde terug te krijgen bij datums.
@@ -17,9 +18,10 @@ library("dplyr")# library voor onder andere SQL
 library("RMySQL")# library voor sql connectie
 
 ```
+<br>
 
-
-<h1> Dataset inladen via sql </h1>
+<h4> Dataset inladen via sql </h4>
+<p>Om sql te gebruiken binnen onze R studio omgeving zullen we een connectie moeten leggen met een database.</p>
 ```{r}
 con = dbConnect(MySQL(), 
                 user='root',
@@ -30,7 +32,8 @@ con = dbConnect(MySQL(),
 ```
 
 
-<h1> SQL query voor ophalen van game data per genre </h1>
+<h4> SQL query voor ophalen van game data per genre </h4>
+<p>Dit is de eerste SQL chunk die we maken hierbij vragen we aan de database om ons informatie terug te geven over games met het genres uit 2009.</p>
 ```{sql, connection = con, output.var = "gamesdf_genre"}
 SELECT `Rank`, `Genre`, SUM(`Global_Sales`) AS `TotalSalesInMillions`, `Year` 
   FROM `games_data` 
@@ -39,7 +42,8 @@ SELECT `Rank`, `Genre`, SUM(`Global_Sales`) AS `TotalSalesInMillions`, `Year`
 
 ```
 
-<h1>Populairste game-genre in 2009 over de hele wereld</h1>
+<h2>Populairste game-genre in 2009 over de hele wereld</h2>
+<p>Uit deze grafiek kunnen we herleiden dat Action games toch wel echt een groot deel uitmaken van de game industire met sports games. Als we dit vergelijken met andere games zien we dat de andere niet dichtbij komen. Als we dit ook vergelijken met andere jaren zien we nogsteeds een dominante marktpositie</p>
 ```{r}
 ggplot(data=gamesdf_genre,
   aes(x=Genre, y=TotalSalesInMillions, fill = Genre)) +
@@ -47,14 +51,16 @@ ggplot(data=gamesdf_genre,
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
        labs(y = "Game Verkoop (in miljoenen)", x = "Genres") 
 ```
-<h1> SQL query voor ophalen van game data per genre </h1>
+<h4> SQL query voor ophalen van game data per genre </h4>
+<p> Hier heb ik een simpele query gebruikt om bij de volgende plot aan te tonen dat ik ervaring heb met lubridate</p>
 ```{sql, connection = con, output.var = "games"}
 SELECT * 
   FROM `games_data` 
 
 ```
 
-<h1> Hoeveel games zijn er uitgekomen sinds 2009 per genre</h1>
+<h2>Hoeveel games zijn er uitgekomen sinds 2009 per genre</h2>
+<p>Door deze chunk kunnen we ook goed zien waarom de Action en sports games zo hoge verkopen hebben. Er worden namelijk veel van dit soort games uitgebracht, game makers zouden ook geen games maken die mensen niet willen spellen dus je kan ook hieruit zien dat de game makers action games want die verkopen ook goed.</p>
 ```{r}
 games %>%
   mutate(DATE = as.Date(Year, format = "%Y")) %>%
@@ -64,13 +70,13 @@ games %>%
       geom_bar(stat = "count", fill="#f8766d") +
       stat_count(geom = "text",colour = "Black", aes(label = ..count..),position=position_stack(vjust=0.5)) +
       theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-      labs(title = "Action games sinds 2000",
+      labs(title = "Games releases sinds 2000",
                y = "Aantal releases",
                x = "Game genres") 
 ```
 
-<h1> SQL query voor ophalen van aantal Action games op de X360 of XOne</h1>
-```{sql, connection = con, output.var = "gamesdf_nintendo_nes"}
+<h4> SQL query voor ophalen van aantal Action games op de X360 of XOne</h4>
+```{sql, connection = con, output.var = "gamesdf_xbox"}
 SELECT *
   FROM games_data
     WHERE (Genre = 'Action' ) 
@@ -79,9 +85,10 @@ SELECT *
 ```
 
 
-<h1> Grootste Action games op de X360 of XOne</h1>
+<h2> Grootste Action games op de X360 of XOne</h2>
+<p> De xbox is een populaire console geweest en er zijn veel games op uitgekomen, deze dataset bevat niet veel XOne platform games door de oudheid van de dataset. Alleen zien we wel dat de populaiste game Grand theft auto is uit het action genre.
 ```{r}
-ggplot(data=gamesdf_nintendo_nes,
+ggplot(data=gamesdf_xbox,
   aes(x=Name, y=Global_Sales, fill =Platform)) +
     geom_bar(stat="identity") +
     theme(axis.text.x = element_text(angle = 75, vjust = 1, hjust = 1)) +
@@ -89,10 +96,7 @@ ggplot(data=gamesdf_nintendo_nes,
 ```
 
 
-<h1>Grootste publishers in de laatste 5 jaar (huidig jaar 2017)</h1>
-
-
-<h1>Top 5 Pokemon games tussen 1996-2015 op basis van verkoop</h1>
+<h4>Top 5 Pokemon games tussen 1996-2015 op basis van verkoop</h4>
 ```{sql, connection = con, output.var = "gamesdf_nintendo_pokemon"}
 SELECT * FROM `games_data` 
   WHERE Name LIKE '%Pokemon%' OR   Name LIKE '%Pokémon%'
@@ -111,7 +115,8 @@ ggplot(data=gamesdf_nintendo_pokemon,
        labs(y = "Game verkoop (in miljoenen)", x = "Game titel") 
 ```
 
-<h1>Wie is de grootste Publisher op basis van sales</h1>
+<h4>Wie is de grootste Publisher op basis van sales</h4>
+</p> dit is intressant om te weten om daarna ook te zien hoe oud de publisher is en zo dus ook te weten of ze per jaar veel games nog uitbrengen</p>
 ```{sql, connection = con, output.var = "gamesdf_biggest_publisher"}
 SELECT Publisher, SUM(Global_Sales) 
   AS Global_Sales_In_Millions 
@@ -135,6 +140,7 @@ SELECT games_data.Publisher, SUM(Global_Sales) AS Global_Sales_In_Millions, Foun
 # hierbij krijgen we ook de founded date van de grootste publisher
 print(gamesdf_biggest_publisher_founded_data)
 ```
+<h4> Deze SQL chunk heb ik gebruikt om aan te tonen dat ik een inner join beheers </h4>
 ```{sql, connection = con, output.var = "publisherdf"}
 SELECT games_data.Publisher, SUM(Global_Sales) AS Global_Sales_In_Millions, Founded, CURDATE() AS DateOfToday
     FROM games_data 
@@ -143,9 +149,9 @@ SELECT games_data.Publisher, SUM(Global_Sales) AS Global_Sales_In_Millions, Foun
       GROUP BY publisher_data.Publisher 
 ```
 
-<h1> Oudste game studios </h1>
+<h2> Oudste game studios </h2>
+</p> Hieruit kan je zien dat Nintendo en Cdeco vergeleken met de andere game studios relatief oud zijn en daarom ook meer sales hebben doordat ze al langer mee gaan dan de concurrenten </p>
 ```{r}
-
 publisherdf_interval <- publisherdf %>%
   #interval is van lubridate
   mutate(YearInterval = interval(Founded, DateOfToday) / years(1))
